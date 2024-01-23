@@ -21,7 +21,4 @@ Follow the steps below to get started with the project:
 
 #### Training
 
-Then, run `main.py`
-
-python 3 and docker version please go to [DANN_py3](https://github.com/fungtion/DANN_py3) 
-
+run `main.py`
