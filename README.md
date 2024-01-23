@@ -8,10 +8,9 @@ Follow the steps below to get started with the project:
 
 ### Prerequisites
 - Python 3.x
-- TensorFlow
+- Pytorch
 - NumPy
 - Matplotlib
-- Other dependencies (list them here)
 
 #### Network Structure
 
