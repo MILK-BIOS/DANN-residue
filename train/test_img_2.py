@@ -12,12 +12,13 @@ import pandas as pd
 
 
 # 定义 get_minibatches 函数，此处省略，使用你之前定义的函数
-def get_minibatches(inputs, chunksize = 1024 * 32):
+def get_minibatches(inputs, chunksize=1024 * 32):
     r"""Takes a huge tensor (ray "bundle") and splits it into a list of minibatches.
     Each element of the list (except possibly the last) has dimension `0` of length
     `chunksize`.
     """
     return [inputs[i:i + chunksize] for i in range(0, inputs.shape[0], chunksize)]
+
 
 if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -30,7 +31,7 @@ if __name__ == '__main__':
     alpha = 0
 
     """load data"""
-    path = '../dataset/lishu_s12_20.tiff'
+    path = '../dataset/lishu_s12_21git.tiff'
     img_tf = tf.imread(path)
     img = torch.tensor(img_tf).view(15, -1).float()
     img = img.T
@@ -47,19 +48,18 @@ if __name__ == '__main__':
     # std = torch.std(img_nan_mask1, dim=0, keepdim=True)  # 计算图像中非 NaN 像素值的标准差。
     # print(mean,std)
     if path == '../dataset/lishu_s12_20.tiff':
-        mean = np.array([-1.6417e+01, -3.1448e+01,  3.6362e+01,  4.5159e-01,  1.2899e+03,
-              7.0286e-01,  7.9835e+02,  1.2558e+03,  1.9334e+03,  2.9812e+03,
-              2.6952e+03,  1.4174e-01, -1.7032e-01,  4.4627e-02,  1.3331e+00])
-        std = np.array([1.9450e+01, 3.2024e+01, 3.7120e+01, 3.9507e-01, 2.8748e+03, 2.2344e-01,
-             1.6949e+02, 2.2510e+02, 3.3402e+02, 4.7317e+02, 2.0759e+02, 2.9258e-02,
-             7.6024e-02, 7.4289e-02, 7.8293e-02])
+        mean = np.array(
+            [-14.884668350219727, -28.888315200805664, 33.29230499267578, 0.4585520923137665, 927.4970703125, 0.6962623000144958, 797.4642944335938, 1255.49365234375, 1934.1185302734375, 2983.580810546875, 2697.75048828125, 0.1424081027507782, -0.16956187784671783, 0.04584725201129913, 1.3344955444335938])
+        std = np.array([15.705412864685059, 25.763347625732422, 29.83693504333496, 0.3049178719520569, 1869.6712646484375, 0.1617993265390396, 152.79661560058594, 203.365234375, 303.1920166015625, 430.80657958984375, 179.0396728515625, 0.026517020538449287, 0.06928186118602753, 0.0676175057888031, 0.07123342156410217])
     else:
-        mean = np.array([-1.5640e+01, -3.0492e+01,  3.5560e+01,  6.8423e-01,  2.7796e+04,
-          5.2921e-01,  8.3131e+02,  1.1490e+03,  1.6269e+03,  2.3394e+03,
-          2.7287e+03,  7.9246e-02, -2.5195e-01, -7.6281e-02,  1.1767e+00])
-        std = np.array([6.8390e+01, 1.0825e+02, 1.2776e+02, 6.2501e+02, 3.6862e+07, 2.9474e+02,
-         1.7381e+02, 2.3112e+02, 3.3107e+02, 4.5758e+02, 5.4512e+02, 4.1461e-02,
-         8.5349e-02, 9.1382e-02, 1.0025e-01])
+        mean = np.array(
+            [-15.593433380126953, -30.415849685668945, 35.33893585205078, 0.30355292558670044, 1372.9437255859375,
+             0.5820470452308655, 831.2803344726562, 1148.9268798828125, 1626.899658203125, 2339.423095703125,
+             2728.666015625, 0.07924484461545944, -0.2519519627094269, -0.07628648728132248, 1.1767325401306152])
+        std = np.array([33.18778991699219, 55.5806999206543, 35.336002349853516, 49.58562469482422, 83712.9453125,
+                        32.980770111083984, 173.60861206054688, 230.97706604003906, 330.97149658203125,
+                        457.4918518066406, 544.689697265625, 0.04145393148064613, 0.0853317379951477,
+                        0.09136494994163513, 0.1002340242266655])
     normalize = transforms.Lambda(lambda x: (x - mean) / std)  # 创建一个变换（transformation），这里定义了一个匿名函数，对输入的张量x进行标准化操作
     img = normalize(img)  # 用上一步定义的标准化函数对图像进行处理。
     img = img.float()
@@ -83,11 +83,11 @@ if __name__ == '__main__':
     batches = get_minibatches(img, chunksize=chunksize)
 
     # 设置要测试的 epoch 范围
-    start_epoch = 26
-    end_epoch = 29
+    start_epoch = 18
+    end_epoch = 23
 
     # 创建一个子图，每行显示多少个图像取决于 ncols 参数
-    ncols = 2
+    ncols = 3
     nrows = (end_epoch - start_epoch + 1) // ncols + ((end_epoch - start_epoch + 1) % ncols > 0)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 3 * nrows))
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         # 将结果添加到列表中
         all_results.append((img_pred, epoch))
 
-     # 绘制所有图像
+    # 绘制所有图像
     for idx, (img_pred, epoch) in enumerate(all_results):
         row = idx // ncols
         col = idx % ncols
@@ -139,13 +139,3 @@ if __name__ == '__main__':
     # 将子图布局调整为紧凑
     plt.tight_layout()
     plt.show()
-
-
-
-
-
-
-
-
-
-
