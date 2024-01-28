@@ -5,6 +5,16 @@ import tifffile as tf
 import torch
 import numpy as np
 
+def remove_outliers_std(column, n_std=3):
+    mean = np.mean(column)
+    std = np.std(column)
+
+    lower_bound = mean - n_std * std
+    upper_bound = mean + n_std * std
+
+    # 将异常值限制在边界内
+    processed_column = np.clip(column, lower_bound, upper_bound)
+    return torch.tensor(processed_column, dtype=torch.float32)
 
 def remove_outliers_percentile_columnwise(tensor, lower_percentile=0, upper_percentile=100):
     # 将张量转换为 NumPy 数组
