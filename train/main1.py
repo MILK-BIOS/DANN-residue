@@ -32,15 +32,17 @@ if __name__ == '__main__':
     dataset_source = load_data(
         data_root=source_data_root,
         data_set=source_dataset_name,
-        transform=True,
-        domain_flag=0
+        transform=True,  #指定是否应用数据变换
+        domain_flag=0   #指定数据集的域标识，这里设为0
     )
 
+       #创建了一个名为dataloader_source的数据加载器对象，等号后面没看懂
     dataloader_source = torch.utils.data.DataLoader(
-        dataset=dataset_source,
-        batch_size=batch_size,
-        shuffle=True,
-        num_workers=2)
+        dataset=dataset_source,   #要加载的数据集对象
+        batch_size=batch_size,   #批次
+        shuffle=True,   #表示是否在每个迭代中对数据进行洗牌，打乱数据的顺序，这样可以增加模型的泛化性能
+        num_workers=2)   #用于数据加载的子进程数目，可以加速数据加载过程
+
 
     dataset_target = load_data(
         data_root=target_data_root,
@@ -57,22 +59,22 @@ if __name__ == '__main__':
     print('data load finished!')
     # load model
 
-    my_net = FCModel()
+    my_net = FCModel()   #调用FCModel
 
-    # setup optimizer
-
+    # setup optimizer  模型的优化和损失函数的定义
+    # 创建了一个Adam优化器，，用于更新神经网络模型参数以最小化训练中的损失
     optimizer = optim.Adam(my_net.parameters(), lr=lr)
-
-    loss_class = torch.nn.NLLLoss()
-    loss_domain = torch.nn.NLLLoss()
+    #创建了负对数似然损失（Negative Log Likelihood Loss）
+    loss_class = torch.nn.NLLLoss()   #度量分类任务中的损失
+    loss_domain = torch.nn.NLLLoss()   #度量域适应任务中的损失
 
     if cuda:
         my_net = my_net.cuda()
         loss_class = loss_class.cuda()
         loss_domain = loss_domain.cuda()
 
-    for p in my_net.parameters():
-        p.requires_grad = True
+    for p in my_net.parameters():   #遍历神经网络模型my_net中的所有参数
+        p.requires_grad = True   #将每个参数的requires_grad属性设置为True，表示这些参数需要计算梯度，从而可以在训练过程中进行更新。
     print('model init finished!')
     # training
     print('---------------------training---------------------')
