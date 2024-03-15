@@ -31,7 +31,7 @@ if __name__ == '__main__':
     alpha = 0
 
     """load data"""
-    path = '../dataset/lishu_s12_21git.tiff'
+    path = '../dataset/lishu_s12_21.tiff'
     img_tf = tf.imread(path)
     img = torch.tensor(img_tf).view(15, -1).float()
     img = img.T
@@ -83,11 +83,11 @@ if __name__ == '__main__':
     batches = get_minibatches(img, chunksize=chunksize)
 
     # 设置要测试的 epoch 范围
-    start_epoch = 18
-    end_epoch = 23
+    start_epoch = 14
+    end_epoch = 17
 
     # 创建一个子图，每行显示多少个图像取决于 ncols 参数
-    ncols = 3
+    ncols = 2
     nrows = (end_epoch - start_epoch + 1) // ncols + ((end_epoch - start_epoch + 1) % ncols > 0)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 3 * nrows))
 
